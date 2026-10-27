@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import clientRoutes from './client.routes.js';
+import draftLogRoutes from './draft-log.routes.js';
 
 const router = Router();
 
@@ -10,4 +12,12 @@ router.get('/health', (req, res) => {
   });
 });
 
+// Rutas de clientes (/api/clients)
+router.use('/clients', clientRoutes);
+
+// Rutas de registros borradores (/api/draft-logs)
+router.use('/draft-logs', draftLogRoutes);
+
 export default router;
+
+
