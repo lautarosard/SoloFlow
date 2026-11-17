@@ -41,6 +41,14 @@
   --color-info: #38bdf8; /* telemetry, active clients, repo sync */
   --color-danger: #ef4444; /* over budget, overlapping tasks, destructive */
 
+  /* Client stripes (log cards, chips). Assigned deterministically in domain/client-color.ts */
+  --color-client-1: #38bdf8;
+  --color-client-2: #a78bfa;
+  --color-client-3: #f472b6;
+  --color-client-4: #a3e635;
+  --color-client-5: #fb923c;
+  --color-client-6: #2dd4bf;
+
   /* Typography */
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
