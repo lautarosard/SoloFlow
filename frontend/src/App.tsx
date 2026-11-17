@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import DraftLogForm from './components/DraftLogForm';
 import DraftLogList from './components/DraftLogList';
 
@@ -32,7 +32,7 @@ export default function App() {
   );
 }
 
-const styles = {
+const styles: Record<string, CSSProperties> = {
   container: {
     maxWidth: '1200px',
     margin: '0 auto',

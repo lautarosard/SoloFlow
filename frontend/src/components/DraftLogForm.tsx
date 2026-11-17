@@ -1,21 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, type CSSProperties, type FormEvent } from 'react';
 import draftLogService from '../services/draft-log.service';
 import clientService from '../services/client.service';
+import { getErrorMessage } from '../services/http';
+import type { Client } from '../types/client';
+import type { DraftLog, DraftLogStatus } from '../types/draft-log';
 
-export default function DraftLogForm({ onCreated }) {
+interface DraftLogFormProps {
+  onCreated?: (log: DraftLog) => void;
+}
+
+export default function DraftLogForm({ onCreated }: DraftLogFormProps) {
   const [clientId, setClientId] = useState('');
   const [description, setDescription] = useState('');
   const [durationMinutes, setDurationMinutes] = useState('');
-  const [status, setStatus] = useState('pending');
+  const [status, setStatus] = useState<DraftLogStatus>('pending');
   const [tags, setTags] = useState('');
 
-  const [clients, setClients] = useState([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [loadingClients, setLoadingClients] = useState(true);
-  const [clientsError, setClientsError] = useState(null);
+  const [clientsError, setClientsError] = useState<string | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Carga inicial de clientes disponibles para el select
   useEffect(() => {
@@ -24,11 +31,9 @@ export default function DraftLogForm({ onCreated }) {
       setClientsError(null);
       try {
         const res = await clientService.getAll();
-        const clientList = res?.data || [];
-        setClients(clientList);
+        setClients(res.data);
       } catch (err) {
-        const msg = err.response?.data?.data?.message || err.response?.data?.message || 'Error al cargar clientes';
-        setClientsError(msg);
+        setClientsError(getErrorMessage(err, 'Error al cargar clientes'));
       } finally {
         setLoadingClients(false);
       }
@@ -37,7 +42,7 @@ export default function DraftLogForm({ onCreated }) {
     loadClients();
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setSuccessMessage(null);
@@ -80,15 +85,9 @@ export default function DraftLogForm({ onCreated }) {
       setSuccessMessage('Registro borrador creado con éxito');
 
       // Notificar al componente padre para refrescar la lista
-      if (typeof onCreated === 'function') {
-        onCreated(res.data);
-      }
+      onCreated?.(res.data);
     } catch (err) {
-      const errorMsg =
-        err.response?.data?.data?.message ||
-        err.response?.data?.message ||
-        'Error inesperado al crear el registro';
-      setError(errorMsg);
+      setError(getErrorMessage(err, 'Error inesperado al crear el registro'));
     } finally {
       setSubmitting(false);
     }
@@ -168,7 +167,7 @@ export default function DraftLogForm({ onCreated }) {
           <label style={styles.label}>Estado</label>
           <select
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            onChange={(e) => setStatus(e.target.value as DraftLogStatus)}
             style={styles.select}
           >
             <option value="pending">pending (Pendiente)</option>
@@ -206,7 +205,7 @@ export default function DraftLogForm({ onCreated }) {
   );
 }
 
-const styles = {
+const styles: Record<string, CSSProperties> = {
   card: {
     backgroundColor: '#ffffff',
     padding: '24px',

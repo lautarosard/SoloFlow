@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, type CSSProperties } from 'react';
 import draftLogService from '../services/draft-log.service';
+import { getErrorMessage } from '../services/http';
+import type { DraftLog, DraftLogStatus } from '../types/draft-log';
 
-export default function DraftLogList({ refreshTrigger }) {
-  const [logs, setLogs] = useState([]);
+interface DraftLogListProps {
+  refreshTrigger: number;
+}
+
+export default function DraftLogList({ refreshTrigger }: DraftLogListProps) {
+  const [logs, setLogs] = useState<DraftLog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchLogs = async () => {
     setLoading(true);
@@ -12,13 +18,9 @@ export default function DraftLogList({ refreshTrigger }) {
     try {
       const response = await draftLogService.getAll();
       // El backend envuelve la respuesta en { status: 'success', data: [...] }
-      setLogs(response?.data || []);
+      setLogs(response.data);
     } catch (err) {
-      const errorMsg =
-        err.response?.data?.data?.message ||
-        err.response?.data?.message ||
-        'Error al cargar los registros borrador';
-      setError(errorMsg);
+      setError(getErrorMessage(err, 'Error al cargar los registros borrador'));
     } finally {
       setLoading(false);
     }
@@ -28,7 +30,7 @@ export default function DraftLogList({ refreshTrigger }) {
     fetchLogs();
   }, [refreshTrigger]);
 
-  const getStatusBadgeStyle = (status) => {
+  const getStatusBadgeStyle = (status: DraftLogStatus): CSSProperties => {
     switch (status) {
       case 'grouped':
         return { backgroundColor: '#e6fffa', color: '#234e52', borderColor: '#b2f5ea' };
@@ -72,7 +74,7 @@ export default function DraftLogList({ refreshTrigger }) {
         <div style={styles.list}>
           {logs.map((log) => {
             const badgeStyle = getStatusBadgeStyle(log.status);
-            const tagList = Array.isArray(log.tags) ? log.tags : [];
+            const tagList = log.tags;
 
             return (
               <div key={log.id} style={styles.item}>
@@ -120,7 +122,7 @@ export default function DraftLogList({ refreshTrigger }) {
   );
 }
 
-const styles = {
+const styles: Record<string, CSSProperties> = {
   card: {
     backgroundColor: '#ffffff',
     padding: '24px',
