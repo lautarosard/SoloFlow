@@ -23,6 +23,7 @@ export const router = createBrowserRouter([
       { path: 'capture', element: page(<CapturePage />) },
       { path: 'triage', element: page(<TriagePage />) },
       { path: 'composer', element: page(<ComposerPage />) },
+      { path: 'dispatch', element: page(<DispatchPage />) },
       { path: 'dispatch/:reportId', element: page(<DispatchPage />) },
       { path: 'reports', element: page(<ReportsPage />) },
       { path: 'clients', element: page(<ClientsPage />) },

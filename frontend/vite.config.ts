@@ -6,9 +6,10 @@ import tailwindcss from '@tailwindcss/vite';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  envPrefix: ['DATA_', 'API_', 'MOCK_'],
   test: {
     environment: 'jsdom',
-    env: { VITE_MOCK_LATENCY: '0', VITE_DATA_SOURCE: 'mock' },
+    env: { MOCK_LATENCY: '0', DATA_SOURCE: 'mock' },
     restoreMocks: true,
   },
   server: {

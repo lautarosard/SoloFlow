@@ -1,9 +1,9 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_DATA_SOURCE?: 'mock' | 'api';
-  readonly VITE_MOCK_LATENCY?: string;
-  readonly VITE_API_BASE_URL?: string;
+  readonly DATA_SOURCE?: 'mock' | 'api';
+  readonly MOCK_LATENCY?: string;
+  readonly API_BASE_URL?: string;
 }
 
 interface ImportMeta {
